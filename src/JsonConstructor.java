@@ -16,27 +16,30 @@ public class JsonConstructor {
     }
 
     public void save(Task task) {
-        StringBuilder json = new StringBuilder();
+
+        List<String> objetos = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader("task.json"))) {
-
-            String line = reader.readLine();
+            StringBuilder json = new StringBuilder();
+            String line;
             while ((line = reader.readLine()) != null) {
                 json.append(line);
             }
 
-        } catch (FileNotFoundException f){
-            f.printStackTrace();
+            String jsonString = json.toString().trim();
+
+            if (jsonString.startsWith("[") && jsonString.endsWith("]")) {
+                String[] obj = jsonString.substring(1, json.length() - 1).split("\\},\\{");
+
+                for (String object : obj) {
+                    objetos.add(object.startsWith("{") ? object : ""+ object);
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        String jsonString = json.toString();
-        String[] obj = new String[]{jsonString.replace("[", "").replace("]", "")};
-
-        List<String> objetos = new ArrayList<>();
-
-        String newTask = "{\n" +
+        String newTask = "{ \n" +
                 "\"id\": " + task.getId() + ",\n" +
                 "\"description\": \"" + task.getDescription() + "\",\n" +
                 "\"status\": \"" + task.getStatus() + "\",\n" +
@@ -45,14 +48,20 @@ public class JsonConstructor {
                 "}";
 
         objetos.add(newTask);
-        for (String tasks : obj) {
-            System.out.println(tasks);
-            objetos.add(tasks);
-        }
 
-        String newJson = "[" + String.join(",", objetos) + "]";
+        StringBuilder nuevoJson = new StringBuilder("[");
+        for (int i = 0; i < objetos.size(); i++) {
+            nuevoJson.append(objetos.get(i));
+            if (i < objetos.size() - 1) {
+                nuevoJson.append(", ");
+            }
+        }
+        nuevoJson.append("]");
+
+
+
         try (FileWriter file = new FileWriter("task.json")) {
-            file.write(newJson);
+            file.write(nuevoJson.toString());
             System.out.println("Json Created Successfully");
         } catch (IOException e) {
             e.printStackTrace();
