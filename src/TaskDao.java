@@ -15,6 +15,7 @@ public class TaskDao {
     }
 
     public void updateTask(Task updateTask) {
+        jc.update(updateTask);
 
     }
 

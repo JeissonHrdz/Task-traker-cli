@@ -4,21 +4,8 @@ import java.util.List;
 
 public class JsonConstructor {
 
-    public void createJson(Task task) {
-        String json = "[]";
-
-        try (FileWriter file = new FileWriter("task.json")) {
-            file.write(json);
-            System.out.println("Json Created Successfully");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void save(Task task) {
-
+    public List<String> normalizeJson() {
         List<String> objetos = new ArrayList<>();
-
         try (BufferedReader reader = new BufferedReader(new FileReader("task.json"))) {
             StringBuilder json = new StringBuilder();
             String line;
@@ -29,15 +16,30 @@ public class JsonConstructor {
             String jsonString = json.toString().trim();
 
             if (jsonString.startsWith("[") && jsonString.endsWith("]")) {
-                String[] obj = jsonString.substring(1, json.length() - 1).split("\\},\\{");
+                String[] obj = jsonString.substring(1, jsonString.length() - 1).split("\\},\\s*\\{");
 
                 for (String object : obj) {
-                    objetos.add(object.startsWith("{") ? object : ""+ object);
+
+
+                    String objetoNormalizado = object.startsWith("{") ? object : "{" + object;
+                    objetoNormalizado = objetoNormalizado.endsWith("}") ? objetoNormalizado : objetoNormalizado + "}";
+                    objetos.add(objetoNormalizado);
+
+                    //  objetos.add(object.startsWith("{") ? object : "{" + object);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return objetos;
+    }
+
+    public void save(Task task) {
+
+        List<String> objetos = new ArrayList<>();
+
+        objetos = normalizeJson();
 
         String newTask = "{ \n" +
                 "\"id\": " + task.getId() + ",\n" +
@@ -59,7 +61,6 @@ public class JsonConstructor {
         nuevoJson.append("]");
 
 
-
         try (FileWriter file = new FileWriter("task.json")) {
             file.write(nuevoJson.toString());
             System.out.println("Json Created Successfully");
@@ -68,5 +69,33 @@ public class JsonConstructor {
         }
 
 
+    }
+
+    public void update(Task task) {
+        List<String> objetos = new ArrayList<>();
+        List<String> tasksUpadted = new ArrayList<>();
+        objetos = normalizeJson();
+        String status = "mipapa";
+
+
+        for (String tasks : objetos) {
+         //   System.out.println(tasks +"OBJETOOO");
+            String objetoNormalizado = tasks;
+
+            if (objetoNormalizado.contains("\"id\": " + 2)) {
+
+                objetoNormalizado = objetoNormalizado.replaceFirst("\"status\": \"[^\"]+\"", "\"status\": \""+status+"\"");
+            }
+
+            tasksUpadted.add(objetoNormalizado);
+        }
+
+        String nuevoJson = "[" + String.join(", ", tasksUpadted) + "]";
+        try (FileWriter file = new FileWriter("task.json")) {
+            file.write(nuevoJson.toString());
+            System.out.println("Json Created Successfully");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
