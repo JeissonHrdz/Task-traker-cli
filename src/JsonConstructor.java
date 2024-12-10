@@ -101,6 +101,7 @@ public class JsonConstructor {
             if (!objetoNormalizado.contains("\"id\": " + id)) {
                 tasksUpdates.add(objetoNormalizado);
             }
+            
         }
 
         String nuevoJson = "[" + String.join(", ", tasksUpdates) + "]";
