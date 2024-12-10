@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaskDao {
@@ -16,7 +17,10 @@ public class TaskDao {
 
     public void updateTask(Task updateTask) {
         jc.update(updateTask);
+    }
 
+    public void deleteTask(Integer id) {
+        jc.delete(id);
     }
 
     public void updateStatus(Task updateStatus) {
@@ -24,7 +28,12 @@ public class TaskDao {
     }
 
     public List<Task> getAllTasks() {
-        return null;
+        List<Task> tasksList = new ArrayList<>();
+
+        for (String task : jc.listTasks()) {
+
+        }
+      return tasksList;
     }
 
     public List<Task> getTasksByStatus(String status) {

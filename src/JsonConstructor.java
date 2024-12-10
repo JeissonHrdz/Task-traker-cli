@@ -1,4 +1,5 @@
 import java.io.*;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,18 +14,16 @@ public class JsonConstructor {
                 json.append(line);
             }
 
-            String jsonString = json.toString().trim();
+            String jsonString = json.toString().replaceAll("\n", "");
+            jsonString = jsonString.trim();
 
             if (jsonString.startsWith("[") && jsonString.endsWith("]")) {
                 String[] obj = jsonString.substring(1, jsonString.length() - 1).split("\\},\\s*\\{");
 
                 for (String object : obj) {
-
-
                     String objetoNormalizado = object.startsWith("{") ? object : "{" + object;
                     objetoNormalizado = objetoNormalizado.endsWith("}") ? objetoNormalizado : objetoNormalizado + "}";
                     objetos.add(objetoNormalizado);
-
                     //  objetos.add(object.startsWith("{") ? object : "{" + object);
                 }
             }
@@ -38,7 +37,6 @@ public class JsonConstructor {
     public void save(Task task) {
 
         List<String> objetos = new ArrayList<>();
-
         objetos = normalizeJson();
 
         String newTask = "{ \n" +
@@ -60,33 +58,26 @@ public class JsonConstructor {
         }
         nuevoJson.append("]");
 
-
         try (FileWriter file = new FileWriter("task.json")) {
             file.write(nuevoJson.toString());
             System.out.println("Json Created Successfully");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void update(Task task) {
         List<String> objetos = new ArrayList<>();
         List<String> tasksUpadted = new ArrayList<>();
         objetos = normalizeJson();
-        String status = "mipapa";
+        String status = "tengohambre";
 
 
         for (String tasks : objetos) {
-         //   System.out.println(tasks +"OBJETOOO");
             String objetoNormalizado = tasks;
-
             if (objetoNormalizado.contains("\"id\": " + 2)) {
-
-                objetoNormalizado = objetoNormalizado.replaceFirst("\"status\": \"[^\"]+\"", "\"status\": \""+status+"\"");
+                objetoNormalizado = objetoNormalizado.replaceFirst("\"status\": \"[^\"]+\"", "\"status\": \"" + status + "\"");
             }
-
             tasksUpadted.add(objetoNormalizado);
         }
 
@@ -97,5 +88,33 @@ public class JsonConstructor {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void delete(Integer id) {
+        List<String> objetos = new ArrayList<>();
+        List<String> tasksUpdates = new ArrayList<>();
+        objetos = normalizeJson();
+        String deletedTask ="";
+
+        for (String tasks : objetos) {
+            String objetoNormalizado = tasks;
+            if (!objetoNormalizado.contains("\"id\": " + id)) {
+                tasksUpdates.add(objetoNormalizado);
+            }
+        }
+
+        String nuevoJson = "[" + String.join(", ", tasksUpdates) + "]";
+        try (FileWriter file = new FileWriter("task.json")) {
+            file.write(nuevoJson.toString());
+            System.out.println("Json Created Successfully");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<String> listTasks() {
+        List<String> tasks = new ArrayList<>();
+        tasks = normalizeJson();
+        return tasks;
     }
 }
