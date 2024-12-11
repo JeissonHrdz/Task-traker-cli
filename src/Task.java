@@ -16,6 +16,8 @@ public class Task {
          this.updatedAt = updatedAt;
      }
 
+     public Task(){}
+
      public int getId() {
          return id;
      }
@@ -42,6 +44,9 @@ public class Task {
      }
      public Date getUpdatedAt() {
          return updatedAt;
+     }
+     public void setUpdatedAt(Date updatedAt) {
+         this.updatedAt = updatedAt;
      }
 
 

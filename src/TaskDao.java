@@ -15,30 +15,39 @@ public class TaskDao {
         jc.save(task);
     }
 
-    public void updateTask(Task updateTask) {
-        jc.update(updateTask);
+    public void updateStatus(int id, String status) {
+        jc.updateStatus(id, status);
     }
 
     public void deleteTask(Integer id) {
         jc.delete(id);
     }
 
-    public void updateStatus(Task updateStatus) {
-
+    public void updateDescription(int id, String description) {
+        jc.updateDescription(id, description);
 
     }
 
-    public List<Task> getAllTasks() {
+    public void getAllTasks() {
         List<Task> tasksList = new ArrayList<>();
-
-        for (String task : jc.listTasks()) {
-
+        for (Task task : jc.listTasks()) {
+            System.out.println("id: " + task.getId());
+            System.out.println("Description: " + task.getDescription());
+            System.out.println("Status: " + task.getStatus());
+            System.out.println("<------------------------------------------->");
         }
-      return tasksList;
     }
 
-    public List<Task> getTasksByStatus(String status) {
-        return null;
+    public void getTasksByStatus(String status) {
+        List<Task> tasksList = new ArrayList<>();
+        for (Task task : jc.listTasks()) {
+            if (task.getStatus().equals(status)) {
+                System.out.println("id: " + task.getId());
+                System.out.println("Description: " + task.getDescription());
+                System.out.println("Status: " + task.getStatus());
+                System.out.println("<------------------------------------------->");
+            }
+        }
     }
-
 }
+
