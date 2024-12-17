@@ -1,7 +1,7 @@
 [{
     "id": 0,
     "description": "Create Front",
-    "status": "mipapa",
+    "status": "in progress",
     "createdAt": "Mon Dec 09 09:49:05 GMT-05:00 2024",
     "updateAt": "Mon Dec 09 09:49:05 GMT-05:00 2024"
   },
@@ -15,16 +15,9 @@
   {
     "id": 3,
     "description": "prueba error",
-    "status": "Done",
+    "status": "done",
     "createdAt": "Mon Dec 09 10:02:08 GMT-05:00 2024",
     "updateAt": "Mon Dec 09 10:02:08 GMT-05:00 2024"
-  },
-  {
-    "id": 4,
-    "description": "new update",
-    "status": "In Progress",
-    "createdAt": "Wed Dec 11 10:09:32 GMT-05:00 2024",
-    "updateAt": "Wed Dec 11 10:09:32 GMT-05:00 2024"
   },
   {
     "id": 6,
@@ -34,10 +27,30 @@
     "updateAt": "Wed Dec 11 10:50:52 GMT-05:00 2024"
   },
   {
-    "id": 15,
+    "id": 7,
     "description": "new update",
     "status": "todo",
     "createdAt": "Mon Dec 16 09:29:08 GMT-05:00 2024",
     "updateAt": "Mon Dec 16 09:29:08 GMT-05:00 2024"
-  }
-]
+  },
+  {
+    "id": 8,
+    "description": "ksdlad",
+    "status": "todo",
+    "createdAt": "Tue Dec 17 10:15:15 GMT-05:00 2024",
+    "updateAt": "Tue Dec 17 10:15:15 GMT-05:00 2024"
+  },
+  {
+    "id": 9,
+    "description": "asds",
+    "status": "todo",
+    "createdAt": "Tue Dec 17 10:15:59 GMT-05:00 2024",
+    "updateAt": "Tue Dec 17 10:15:59 GMT-05:00 2024"
+  },
+  {
+    "id": 10,
+    "description": "ewea",
+    "status": "todo",
+    "createdAt": "Tue Dec 17 10:16:41 GMT-05:00 2024",
+    "updateAt": "Tue Dec 17 10:16:41 GMT-05:00 2024"
+  }]
