@@ -1,8 +1,9 @@
 
+import java.text.ParseException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
         Cli cli = new Cli();
         String command = "";
         Scanner scanner = new Scanner(System.in);
@@ -23,7 +24,7 @@ public class Main {
             } else if (command.startsWith("list done") ||
                     command.startsWith("list todo") ||
                     command.startsWith("list in-progress")) {
-                System.out.println("Entro");
+
                 cli.listTaskForStatus(command);
             }
         } while (!command.equals("exit"));

@@ -1,3 +1,5 @@
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -7,12 +9,15 @@ public class Cli {
 
     TaskDao taskDao = new TaskDao();
 
-    public void add(String command) {
+    public void add(String command) throws ParseException {
+
+
+        Date date = new Date();
+        SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
         command = command.replace("add ", "");
-        System.out.println(command);
         if (command.startsWith("\"") && command.endsWith("\"")) {
             String taskDescription = command.replace("\"", "");
-            Task task = new Task(0, taskDescription, "todo", new Date(), new Date());
+            Task task = new Task(0, taskDescription, "todo", (format1.format(date)),(format1.format(date)) );
             taskDao.newTask(task);
         } else {
             System.out.println("Invalid task description");
@@ -25,7 +30,7 @@ public class Cli {
 
     public void listTaskForStatus(String command) {
 
-        Pattern pattern = Pattern.compile("^list\\s+(\\d+)$");
+        Pattern pattern = Pattern.compile("^list\\s+(.+)$");
         Matcher matcher = pattern.matcher(command);
         System.out.println("Entro");
 
@@ -39,11 +44,13 @@ public class Cli {
 
     }
 
-    public void updateDescription(String command) {
+    public void updateDescription(String command) throws ParseException {
         int idTask = 0;
 
         Pattern pattern = Pattern.compile("^update\\s+(\\d+)\\s+.*");
         Matcher matcher = pattern.matcher(command);
+        Date date = new Date();
+        SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
 
 
         if (matcher.matches()) {
@@ -51,8 +58,8 @@ public class Cli {
             command = command.replace("update " + idTask + " ", "");
             if (command.startsWith("\"") && command.endsWith("\"")) {
                 String taskDescription = command.replace("\"", "");
-                Task task = new Task(0, taskDescription, "todo", new Date(), new Date());
-                taskDao.updateDescription(idTask, taskDescription);
+                Task task = new Task(0, taskDescription, "todo", "", "");
+                taskDao.updateDescription(idTask, taskDescription, format1.format(date));
             } else {
                 System.out.println("Invalid task description");
             }
@@ -79,6 +86,8 @@ public class Cli {
 
         Pattern pattern = Pattern.compile("^(mark-(in-progress|done))\\s+(\\d+)$");
         Matcher matcher = pattern.matcher(command);
+        Date date = new Date();
+        SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
 
         if (matcher.matches()) {
             String commandSplit = matcher.group(1);
@@ -88,9 +97,9 @@ public class Cli {
             System.out.println("ID: " + id);
 
             if (commandSplit.equals("mark-in-progress")) {
-                taskDao.updateStatus(id, "in progress");
+                taskDao.updateStatus(id, "in progress", format1.format(date));
             } else if (commandSplit.equals("mark-done")) {
-                taskDao.updateStatus(id, "done");
+                taskDao.updateStatus(id, "done", format1.format(date));
             }
         } else {
             System.out.println("Invalid command");

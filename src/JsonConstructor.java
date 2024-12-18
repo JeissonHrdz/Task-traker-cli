@@ -36,16 +36,18 @@ public class JsonConstructor {
     }
 
     public void save(Task task) {
-        int id  = 0;
+        int id = 0;
         List<String> objetos = new ArrayList<>();
         objetos = normalizeJson();
         List<Task> list = listTasks();
-        for (Task t : list) {
-            id = t.getId();
+        if (list.size() > 1) {
+            for (Task t : list) {
+                id = t.getId();
+            }
         }
 
         String newTask = "{ \n" +
-                "\"id\": " + (id+1) + ",\n" +
+                "\"id\": " + (id + 1) + ",\n" +
                 "\"description\": \"" + task.getDescription() + "\",\n" +
                 "\"status\": \"" + task.getStatus() + "\",\n" +
                 "\"createdAt\": \"" + task.getCreatedAt() + "\",\n" +
@@ -65,13 +67,12 @@ public class JsonConstructor {
 
         try (FileWriter file = new FileWriter("task.json")) {
             file.write(nuevoJson.toString());
-            System.out.println("Json Created Successfully");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void updateStatus(int id,String newStatus) {
+    public void updateStatus(int id, String newStatus, String dateUpdated) {
         List<String> objetos = new ArrayList<>();
         List<String> tasksUpadted = new ArrayList<>();
         objetos = normalizeJson();
@@ -80,6 +81,7 @@ public class JsonConstructor {
             String objetoNormalizado = tasks;
             if (objetoNormalizado.contains("\"id\": " + id)) {
                 objetoNormalizado = objetoNormalizado.replaceFirst("\"status\": \"[^\"]+\"", "\"status\": \"" + newStatus + "\"");
+                objetoNormalizado = objetoNormalizado.replaceFirst("\"updateAt\": \"[^\"]+\"", "\"updateAt\": \"" + dateUpdated + "\"");
             }
             tasksUpadted.add(objetoNormalizado);
         }
@@ -87,13 +89,12 @@ public class JsonConstructor {
         String nuevoJson = "[" + String.join(", ", tasksUpadted) + "]";
         try (FileWriter file = new FileWriter("task.json")) {
             file.write(nuevoJson.toString());
-            System.out.println("Json Created Successfully");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void updateDescription(int id, String newDescription) {
+    public void updateDescription(int id, String newDescription, String dateUpdated) {
         List<String> objetos = new ArrayList<>();
         List<String> tasksUpadted = new ArrayList<>();
         objetos = normalizeJson();
@@ -102,6 +103,7 @@ public class JsonConstructor {
             String objetoNormalizado = tasks;
             if (objetoNormalizado.contains("\"id\": " + id)) {
                 objetoNormalizado = objetoNormalizado.replaceFirst("\"description\": \"[^\"]+\"", "\"description\": \"" + newDescription + "\"");
+                objetoNormalizado = objetoNormalizado.replaceFirst("\"updateAt\": \"[^\"]+\"", "\"updateAt\": \"" + dateUpdated + "\"");
             }
             tasksUpadted.add(objetoNormalizado);
         }
@@ -109,7 +111,6 @@ public class JsonConstructor {
         String nuevoJson = "[" + String.join(", ", tasksUpadted) + "]";
         try (FileWriter file = new FileWriter("task.json")) {
             file.write(nuevoJson.toString());
-            System.out.println("Json Created Successfully");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -132,7 +133,6 @@ public class JsonConstructor {
         String nuevoJson = "[" + String.join(", ", tasksUpdates) + "]";
         try (FileWriter file = new FileWriter("task.json")) {
             file.write(nuevoJson.toString());
-            System.out.println("Json Created Successfully");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -143,34 +143,39 @@ public class JsonConstructor {
         List<Task> listTasks = new ArrayList<>();
 
         tasks = normalizeJson();
-        for (String task : tasks) {
-            String atrr = task.trim().substring(1, task.length() - 1);
-            String[] attrSeparatted = atrr.split(",\\s");
-            Task task1 = new Task();
-            for (String attr : attrSeparatted) {
-                String[] keyValue = attr.split(":", 2);
-                String clave = keyValue[0].trim().replace("\"", "");
-                String valor = keyValue[1].trim();
-                switch (clave) {
-                    case "id":
-                        task1.setId(Integer.parseInt(valor));
-                        break;
-                    case "description":
-                        task1.setDescription(valor.replace("\"", ""));
-                        break;
-                    case "status":
-                        task1.setStatus(valor.replace("\"", ""));
-                        break;
-                    case "createdAt":
-                        task1.setCreatedAt(new Date());
-                        break;
-                    case "updateAt":
-                        task1.setUpdatedAt(new Date());
-                        break;
+
+            for (String task : tasks) {
+               // System.out.println(task);
+                String atrr = task.trim().substring(1, task.length() - 1);
+                System.out.println(atrr);
+                String[] attrSeparatted = atrr.split(",\\s");
+                Task task1 = new Task();
+                for (String attr : attrSeparatted) {
+                    String[] keyValue = attr.split(":",2);
+                    String clave = keyValue[0].trim().replace("\"", "");
+                    String valor = keyValue[1].trim();
+                    System.out.println(valor);
+                    switch (clave) {
+                        case "id":
+                            task1.setId(Integer.parseInt(valor));
+                            break;
+                        case "description":
+                            task1.setDescription(valor.replace("\"", ""));
+                            break;
+                        case "status":
+                            task1.setStatus(valor.replace("\"", ""));
+                            break;
+                        case "createdAt":
+                            task1.setCreatedAt("");
+                            break;
+                        case "updateAt":
+                            task1.setUpdatedAt("");
+                            break;
+                    }
                 }
+                listTasks.add(task1);
             }
-            listTasks.add(task1);
-        }
+
 
 
         return listTasks;

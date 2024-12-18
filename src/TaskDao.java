@@ -15,16 +15,16 @@ public class TaskDao {
         jc.save(task);
     }
 
-    public void updateStatus(int id, String status) {
-        jc.updateStatus(id, status);
+    public void updateStatus(int id, String status, String dateUpdated) {
+        jc.updateStatus(id, status, dateUpdated);
     }
 
     public void deleteTask(Integer id) {
         jc.delete(id);
     }
 
-    public void updateDescription(int id, String description) {
-        jc.updateDescription(id, description);
+    public void updateDescription(int id, String description, String dateUpdated) {
+        jc.updateDescription(id, description, dateUpdated);
 
     }
 
@@ -41,7 +41,8 @@ public class TaskDao {
     public void getTasksByStatus(String status) {
         List<Task> tasksList = new ArrayList<>();
         for (Task task : jc.listTasks()) {
-            if (task.getStatus().equals(status)) {
+
+            if (task.getStatus().replace(" ","-").equals(status)) {
                 System.out.println("id: " + task.getId());
                 System.out.println("Description: " + task.getDescription());
                 System.out.println("Status: " + task.getStatus());
