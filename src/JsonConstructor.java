@@ -36,30 +36,38 @@ public class JsonConstructor {
     }
 
     public void save(Task task) {
-        int id = 0;
-        List<String> objetos = new ArrayList<>();
-        objetos = normalizeJson();
-        List<Task> list = listTasks();
-        if (list.size() > 1) {
-            for (Task t : list) {
-                id = t.getId();
+
+            int id = 0;
+            List<String> objetosOrganizados = new ArrayList<>();
+            String  organizeObject = "";
+            List<Task> list = listTasks();
+            if (list.size() >= 1) {
+                for (Task t : list) {
+                    id = t.getId() + 1;
+                    organizeObject  = "\n { \n" +
+                            "   \"id\": " + t.getId() + ",\n" +
+                            "   \"description\": \"" + t.getDescription() + "\",\n" +
+                            "   \"status\": \"" + t.getStatus() + "\",\n" +
+                            "   \"createdAt\": \"" + t.getCreatedAt() + "\",\n" +
+                            "   \"updateAt\": \"" + t.getUpdatedAt() + "\" \n" +
+                            " }" ;
+                    objetosOrganizados.add(organizeObject);
+                }
             }
-        }
 
-        String newTask = "{ \n" +
-                "\"id\": " + (id + 1) + ",\n" +
-                "\"description\": \"" + task.getDescription() + "\",\n" +
-                "\"status\": \"" + task.getStatus() + "\",\n" +
-                "\"createdAt\": \"" + task.getCreatedAt() + "\",\n" +
-                "\"updateAt\": \"" + task.getUpdatedAt() + "\"\n" +
-                "}";
-
-        objetos.add(newTask);
+        String newTask = "\n { \n" +
+                    "   \"id\": " + (id) + ",\n" +
+                    "   \"description\": \"" + task.getDescription() + "\",\n" +
+                    "   \"status\": \"" + task.getStatus() + "\",\n" +
+                    "   \"createdAt\": \"" + task.getCreatedAt() + "\",\n" +
+                    "   \"updateAt\": \"" + task.getUpdatedAt() + "\" \n" +
+                    " }\n";
+        objetosOrganizados.add(newTask);
 
         StringBuilder nuevoJson = new StringBuilder("[");
-        for (int i = 0; i < objetos.size(); i++) {
-            nuevoJson.append(objetos.get(i));
-            if (i < objetos.size() - 1) {
+        for (int i = 0; i < objetosOrganizados.size(); i++) {
+            nuevoJson.append(objetosOrganizados.get(i));
+            if (i < objetosOrganizados.size() - 1) {
                 nuevoJson.append(", ");
             }
         }
@@ -143,41 +151,39 @@ public class JsonConstructor {
         List<Task> listTasks = new ArrayList<>();
 
         tasks = normalizeJson();
+        System.out.println(tasks.size()+ " tasks");
 
-            for (String task : tasks) {
-               // System.out.println(task);
-                String atrr = task.trim().substring(1, task.length() - 1);
-                System.out.println(atrr);
-                String[] attrSeparatted = atrr.split(",\\s");
-                Task task1 = new Task();
-                for (String attr : attrSeparatted) {
-                    String[] keyValue = attr.split(":",2);
-                    String clave = keyValue[0].trim().replace("\"", "");
-                    String valor = keyValue[1].trim();
-                    System.out.println(valor);
-                    switch (clave) {
-                        case "id":
-                            task1.setId(Integer.parseInt(valor));
-                            break;
-                        case "description":
-                            task1.setDescription(valor.replace("\"", ""));
-                            break;
-                        case "status":
-                            task1.setStatus(valor.replace("\"", ""));
-                            break;
-                        case "createdAt":
-                            task1.setCreatedAt("");
-                            break;
-                        case "updateAt":
-                            task1.setUpdatedAt("");
-                            break;
-                    }
+        for (String task : tasks) {
+            // System.out.println(task);
+            String atrr = task.trim().substring(1, task.length() - 1);
+            //  System.out.println(atrr);
+            String[] attrSeparatted = atrr.split(",\\s");
+            Task task1 = new Task();
+            for (String attr : attrSeparatted) {
+                String[] keyValue = attr.split(":", 2);
+                String clave = keyValue[0].trim().replace("\"", "");
+                String valor = keyValue[1].trim();
+
+                switch (clave) {
+                    case "id":
+                        task1.setId(Integer.parseInt(valor));
+                        break;
+                    case "description":
+                        task1.setDescription(valor.replace("\"", ""));
+                        break;
+                    case "status":
+                        task1.setStatus(valor.replace("\"", ""));
+                        break;
+                    case "createdAt":
+                        task1.setCreatedAt(valor.replace("\"", ""));
+                        break;
+                    case "updateAt":
+                        task1.setUpdatedAt(valor.replace("\"", ""));
+                        break;
                 }
-                listTasks.add(task1);
             }
-
-
-
+            listTasks.add(task1);
+        }
         return listTasks;
     }
 }

@@ -11,10 +11,10 @@ public class Cli {
 
     public void add(String command) throws ParseException {
 
-
         Date date = new Date();
         SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
         command = command.replace("add ", "");
+        command = command.trim();
         if (command.startsWith("\"") && command.endsWith("\"")) {
             String taskDescription = command.replace("\"", "");
             Task task = new Task(0, taskDescription, "todo", (format1.format(date)),(format1.format(date)) );
