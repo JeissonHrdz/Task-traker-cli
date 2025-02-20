@@ -37,31 +37,31 @@ public class JsonConstructor {
 
     public void save(Task task) {
 
-            int id = 0;
-            List<String> objetosOrganizados = new ArrayList<>();
-            String  organizeObject = "";
-            List<Task> list = listTasks();
-            if (list.size() >= 1) {
-                for (Task t : list) {
-                    id = t.getId() + 1;
-                    organizeObject  = "\n { \n" +
-                            "   \"id\": " + t.getId() + ",\n" +
-                            "   \"description\": \"" + t.getDescription() + "\",\n" +
-                            "   \"status\": \"" + t.getStatus() + "\",\n" +
-                            "   \"createdAt\": \"" + t.getCreatedAt() + "\",\n" +
-                            "   \"updateAt\": \"" + t.getUpdatedAt() + "\" \n" +
-                            " }" ;
-                    objetosOrganizados.add(organizeObject);
-                }
+        int id = 0;
+        List<String> objetosOrganizados = new ArrayList<>();
+        String organizeObject = "";
+        List<Task> list = listTasks();
+        if (list.size() >= 1) {
+            for (Task t : list) {
+                id = t.getId() + 1;
+                organizeObject = "\n { \n" +
+                        "   \"id\": " + t.getId() + ",\n" +
+                        "   \"description\": \"" + t.getDescription() + "\",\n" +
+                        "   \"status\": \"" + t.getStatus() + "\",\n" +
+                        "   \"createdAt\": \"" + t.getCreatedAt() + "\",\n" +
+                        "   \"updateAt\": \"" + t.getUpdatedAt() + "\" \n" +
+                        " }";
+                objetosOrganizados.add(organizeObject);
             }
+        }
 
         String newTask = "\n { \n" +
-                    "   \"id\": " + (id) + ",\n" +
-                    "   \"description\": \"" + task.getDescription() + "\",\n" +
-                    "   \"status\": \"" + task.getStatus() + "\",\n" +
-                    "   \"createdAt\": \"" + task.getCreatedAt() + "\",\n" +
-                    "   \"updateAt\": \"" + task.getUpdatedAt() + "\" \n" +
-                    " }\n";
+                "   \"id\": " + (id) + ",\n" +
+                "   \"description\": \"" + task.getDescription() + "\",\n" +
+                "   \"status\": \"" + task.getStatus() + "\",\n" +
+                "   \"createdAt\": \"" + task.getCreatedAt() + "\",\n" +
+                "   \"updateAt\": \"" + task.getUpdatedAt() + "\" \n" +
+                " }\n";
         objetosOrganizados.add(newTask);
 
         StringBuilder nuevoJson = new StringBuilder("[");
@@ -75,6 +75,7 @@ public class JsonConstructor {
 
         try (FileWriter file = new FileWriter("task.json")) {
             file.write(nuevoJson.toString());
+            System.out.println("Task added successfully");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -97,9 +98,11 @@ public class JsonConstructor {
         String nuevoJson = "[" + String.join(", ", tasksUpadted) + "]";
         try (FileWriter file = new FileWriter("task.json")) {
             file.write(nuevoJson.toString());
+            System.out.println("Status updated to " + newStatus);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        formatJSON();
     }
 
     public void updateDescription(int id, String newDescription, String dateUpdated) {
@@ -119,6 +122,31 @@ public class JsonConstructor {
         String nuevoJson = "[" + String.join(", ", tasksUpadted) + "]";
         try (FileWriter file = new FileWriter("task.json")) {
             file.write(nuevoJson.toString());
+            System.out.println("Description updated to " + newDescription);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        formatJSON();
+    }
+
+    public void formatJSON() {
+        List<String> objetosOrganizados = new ArrayList<>();
+        String organizeObject = "";
+        List<Task> list = listTasks();
+        for (Task t : list) {
+            organizeObject = "\n { \n" +
+                    "   \"id\": " + t.getId() + ",\n" +
+                    "   \"description\": \"" + t.getDescription() + "\",\n" +
+                    "   \"status\": \"" + t.getStatus() + "\",\n" +
+                    "   \"createdAt\": \"" + t.getCreatedAt() + "\",\n" +
+                    "   \"updateAt\": \"" + t.getUpdatedAt() + "\" \n" +
+                    " }";
+            objetosOrganizados.add(organizeObject);
+        }
+        String nuevoJson = "[" + String.join(", ", objetosOrganizados) + "]";
+        try (FileWriter file = new FileWriter("task.json")) {
+            file.write(nuevoJson.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -127,22 +155,36 @@ public class JsonConstructor {
     public void delete(Integer id) {
         List<String> objetos = new ArrayList<>();
         List<String> tasksUpdates = new ArrayList<>();
+        List<Task> list = listTasks();
+        boolean foundID = false;
         objetos = normalizeJson();
         String deletedTask = "";
-
-        for (String tasks : objetos) {
-            String objetoNormalizado = tasks;
-            if (!objetoNormalizado.contains("\"id\": " + id)) {
-                tasksUpdates.add(objetoNormalizado);
+        for (Task t : list) {
+            if (t.getId() == id) {
+                foundID = true;
+                break;
             }
-
         }
 
-        String nuevoJson = "[" + String.join(", ", tasksUpdates) + "]";
-        try (FileWriter file = new FileWriter("task.json")) {
-            file.write(nuevoJson.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (foundID) {
+            for (String tasks : objetos) {
+                String objetoNormalizado = tasks;
+                if (!objetoNormalizado.contains("\"id\": " + id)) {
+                    tasksUpdates.add(objetoNormalizado);
+                }
+            }
+
+            String nuevoJson = "[" + String.join(", ", tasksUpdates) + "]";
+            try (FileWriter file = new FileWriter("task.json")) {
+                file.write(nuevoJson.toString());
+                System.out.println("Task deleted successfully");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            formatJSON();
+        } else {
+            System.out.println("Task not found");
         }
     }
 
@@ -151,12 +193,10 @@ public class JsonConstructor {
         List<Task> listTasks = new ArrayList<>();
 
         tasks = normalizeJson();
-        System.out.println(tasks.size()+ " tasks");
+
 
         for (String task : tasks) {
-            // System.out.println(task);
             String atrr = task.trim().substring(1, task.length() - 1);
-            //  System.out.println(atrr);
             String[] attrSeparatted = atrr.split(",\\s");
             Task task1 = new Task();
             for (String attr : attrSeparatted) {

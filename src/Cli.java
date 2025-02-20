@@ -76,9 +76,8 @@ public class Cli {
         if (matcher.matches()) {
             idTask = Integer.parseInt(matcher.group(1));
             taskDao.deleteTask(idTask);
-            System.out.println("task deleted successfully");
         } else {
-            System.out.println("id invalido");
+            System.out.println("id invalid");
         }
     }
 
@@ -92,9 +91,6 @@ public class Cli {
         if (matcher.matches()) {
             String commandSplit = matcher.group(1);
             int id = Integer.parseInt(matcher.group(3));
-
-            System.out.println("Comando: " + commandSplit);
-            System.out.println("ID: " + id);
 
             if (commandSplit.equals("mark-in-progress")) {
                 taskDao.updateStatus(id, "in progress", format1.format(date));

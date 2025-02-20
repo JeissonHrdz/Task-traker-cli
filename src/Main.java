@@ -9,6 +9,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         do {
+            System.out.println("▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀");
             System.out.print("Task-cli ");
             command = scanner.nextLine();
             if (command.startsWith("add")) {
@@ -26,7 +27,11 @@ public class Main {
                     command.startsWith("list in-progress")) {
 
                 cli.listTaskForStatus(command);
+            } else{
+                System.out.println("Invalid command");
             }
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
         } while (!command.equals("exit"));
 
     }
